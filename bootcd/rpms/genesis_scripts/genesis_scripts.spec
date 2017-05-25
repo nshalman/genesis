@@ -1,5 +1,5 @@
 Name:           genesis_scripts
-Version:        0.9
+Version:        0.10
 Release:        1%{?dist}
 License:        Apache License, 2.0
 URL:            http://tumblr.github.io/genesis
@@ -11,6 +11,9 @@ Source2:        src/sysconfig-init.diff
 Source3:        src/tty.conf.override
 Source4:        src/genesis-bootloader
 Source5:        src/login-shell
+Source6:        src/init.d-genesis
+Source7:        src/run-genesis-bootloader
+Source8:        src/sysconfig-genesis
 Summary:        Scripts used by Genesis in the bootcd image
 Group:          System Environment/Base
 Requires:       initscripts rootfiles patch
@@ -25,9 +28,11 @@ Scripts and configuration files used by Genesis in the bootcd image
 # noop
 
 %install
-# add root's bash_profile
 mkdir -p $RPM_BUILD_ROOT/root
+# add root's bash_profile
 install -m 644 -T %{SOURCE0}   $RPM_BUILD_ROOT/root/.bash_profile.genesis_scripts
+# add bootloader wrapper to root's homedir
+install -m 755 -T %{SOURCE7}   $RPM_BUILD_ROOT/root/run-genesis-bootloader
 
 # add some overrides we need
 mkdir -p $RPM_BUILD_ROOT/etc/sysconfig/network-scripts
@@ -36,6 +41,8 @@ mkdir -p $RPM_BUILD_ROOT/etc/init.d
 install -m 755 -T %{SOURCE1}   $RPM_BUILD_ROOT/etc/init.d/network-prep
 install -m 644 -T %{SOURCE2}   $RPM_BUILD_ROOT/etc/sysconfig/init.diff
 install -m 644 -T %{SOURCE3}   $RPM_BUILD_ROOT/etc/init/tty.conf.override
+install -m 755 -T %{SOURCE6}   $RPM_BUILD_ROOT/etc/init.d/genesis
+install -m 644 -T %{SOURCE8}   $RPM_BUILD_ROOT/etc/sysconfig/genesis
 
 # add helper for agetty
 install -m 555 -T %{SOURCE5}   $RPM_BUILD_ROOT/root/login-shell
@@ -49,10 +56,13 @@ install -m 555 -T %{SOURCE4}   $RPM_BUILD_ROOT/usr/bin/genesis-bootloader
 
 %files
 %defattr(-, root, root)
+%config /etc/init.d/genesis
 %config /etc/init.d/network-prep
 %config /etc/sysconfig/init.diff
+%config /etc/sysconfig/genesis
 %config /etc/init/tty.conf.override
 %config /root/.bash_profile.genesis_scripts
+%config /root/run-genesis-bootloader
 /usr/bin/genesis-bootloader
 /root/login-shell
 
@@ -62,8 +72,13 @@ cat /root/.bash_profile.genesis_scripts >> /root/.bash_profile
 cp  /etc/init/tty.conf.override /etc/init/tty.conf
 /usr/bin/patch /etc/sysconfig/init < /etc/sysconfig/init.diff
 chkconfig --add network-prep
+chkconfig --add genesis
 
 %changelog
+* Thu May 25 2017 Nahum Shalman <nshalman@uber.com> 0.10
+- use an init script to launch genesis bootloader
+- all ttys log in and tail the log file until done
+
 * Fri Jan 09 2015 Roy Marantz <marantz@tumblr.com> 0.5-1
 - redo networking setup
 

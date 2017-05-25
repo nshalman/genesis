@@ -1,14 +1,25 @@
 
-GENESIS_MODE="$(grep -o -e 'GENESIS_MODE=[^ ]*' /proc/cmdline | cut -c14-)"
+# Genesis modifications
 
-# setup the ruby environment we need
-source /etc/profile.d/rvm.sh
-rvm list
-ruby --version
+# Get our configuration
+source /etc/sysconfig/genesis
 
-if [[ ! -z $GENESIS_MODE ]] && [ ! -e "/var/run/bootloader-autorun.lock" ]
-  then
-    touch /var/run/bootloader-autorun.lock
-    # disable task execution prompting when doing initial target run
-    GENESIS_PROMPT_TIMEOUT=0  /usr/bin/genesis-bootloader 2>&1 | tee /var/log/genesis-bootloader.log
+# Try for two seconds to find a pidfile
+for i in {1..20}
+do
+	if [[ -f ${GENESIS_PIDFILE} ]]
+	then
+		# get the pid and break out of the for loop
+		GENESIS_PID=$(cat ${GENESIS_PIDFILE})
+		break
+	else
+		sleep .1
+	fi
+done
+
+# If we found a pid and a log file, tail the log until the
+# process exits
+if [[ ! -z ${GENESIS_PID} ]] && [[ -f ${GENESIS_LOGFILE} ]]
+then
+	tail -n 10000 -f --pid=${GENESIS_PID} ${GENESIS_LOGFILE}
 fi

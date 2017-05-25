@@ -5,7 +5,7 @@
  AUTOSWAP=no
  # What ttys should gettys be started on?
 -ACTIVE_CONSOLES=/dev/tty[1-6]
-+ACTIVE_CONSOLES=/dev/tty1
++ACTIVE_CONSOLES="/dev/tty[1-6] /dev/ttyS[0-1]"
  # Set to '/sbin/sulogin' to prompt for password on single-user mode
  # Set to '/sbin/sushell' otherwise
  SINGLE=/sbin/sushell
