@@ -29,8 +29,6 @@ Scripts and configuration files used by Genesis in the bootcd image
 mkdir -p $RPM_BUILD_ROOT/root
 # add root's bash_profile
 install -m 644 -T %{SOURCE0}   $RPM_BUILD_ROOT/root/.bash_profile.genesis_scripts
-# add bootloader wrapper to root's homedir
-install -m 755 -T %{SOURCE7}   $RPM_BUILD_ROOT/root/run-genesis-bootloader
 
 # add some overrides we need
 mkdir -p $RPM_BUILD_ROOT/etc/sysconfig/network-scripts
@@ -43,9 +41,10 @@ install -m 644 -T %{SOURCE8}   $RPM_BUILD_ROOT/etc/sysconfig/genesis
 # add helper for agetty
 install -m 555 -T %{SOURCE5}   $RPM_BUILD_ROOT/root/login-shell
 
-# add the bootloader
+# add the bootloader and its wrapper
 mkdir -p $RPM_BUILD_ROOT/usr/bin/
 install -m 555 -T %{SOURCE4}   $RPM_BUILD_ROOT/usr/bin/genesis-bootloader
+install -m 755 -T %{SOURCE7}   $RPM_BUILD_ROOT/usr/bin/run-genesis-bootloader
 
 %clean
 # noop
@@ -56,8 +55,8 @@ install -m 555 -T %{SOURCE4}   $RPM_BUILD_ROOT/usr/bin/genesis-bootloader
 %config /etc/init.d/network-prep
 %config /etc/sysconfig/genesis
 %config /root/.bash_profile.genesis_scripts
-%config /root/run-genesis-bootloader
 /usr/bin/genesis-bootloader
+/usr/bin/run-genesis-bootloader
 /root/login-shell
 
 %post

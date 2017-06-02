@@ -12,7 +12,7 @@
 
 case "$1" in
     start)
-	/root/run-genesis-bootloader
+	/usr/bin/run-genesis-bootloader
 	;;
     *)  ;;
 esac
