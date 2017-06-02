@@ -11,7 +11,7 @@ Source4:        src/genesis-bootloader
 Source5:        src/login-shell
 Source6:        src/genesis.init
 Source7:        src/run-genesis-bootloader
-Source8:        src/sysconfig-genesis
+Source8:        src/genesis.sysconfig
 Summary:        Scripts used by Genesis in the bootcd image
 Group:          System Environment/Base
 Requires:       initscripts rootfiles patch
