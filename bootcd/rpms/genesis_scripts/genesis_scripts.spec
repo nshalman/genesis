@@ -9,7 +9,7 @@ Source0:        src/root-bash_profile
 Source1:        src/init.d-network-prep
 Source4:        src/genesis-bootloader
 Source5:        src/login-shell
-Source6:        src/init.d-genesis
+Source6:        src/genesis.init
 Source7:        src/run-genesis-bootloader
 Source8:        src/sysconfig-genesis
 Summary:        Scripts used by Genesis in the bootcd image
