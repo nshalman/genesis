@@ -7,8 +7,6 @@ BuildArch:      noarch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root
 Source0:        src/root-bash_profile
 Source1:        src/init.d-network-prep
-Source2:        src/sysconfig-init.diff
-Source3:        src/tty.conf.override
 Source4:        src/genesis-bootloader
 Source5:        src/login-shell
 Source6:        src/init.d-genesis
@@ -39,8 +37,6 @@ mkdir -p $RPM_BUILD_ROOT/etc/sysconfig/network-scripts
 mkdir -p $RPM_BUILD_ROOT/etc/init
 mkdir -p $RPM_BUILD_ROOT/etc/init.d
 install -m 755 -T %{SOURCE1}   $RPM_BUILD_ROOT/etc/init.d/network-prep
-install -m 644 -T %{SOURCE2}   $RPM_BUILD_ROOT/etc/sysconfig/init.diff
-install -m 644 -T %{SOURCE3}   $RPM_BUILD_ROOT/etc/init/tty.conf.override
 install -m 755 -T %{SOURCE6}   $RPM_BUILD_ROOT/etc/init.d/genesis
 install -m 644 -T %{SOURCE8}   $RPM_BUILD_ROOT/etc/sysconfig/genesis
 
@@ -58,9 +54,7 @@ install -m 555 -T %{SOURCE4}   $RPM_BUILD_ROOT/usr/bin/genesis-bootloader
 %defattr(-, root, root)
 %config /etc/init.d/genesis
 %config /etc/init.d/network-prep
-%config /etc/sysconfig/init.diff
 %config /etc/sysconfig/genesis
-%config /etc/init/tty.conf.override
 %config /root/.bash_profile.genesis_scripts
 %config /root/run-genesis-bootloader
 /usr/bin/genesis-bootloader
@@ -68,9 +62,12 @@ install -m 555 -T %{SOURCE4}   $RPM_BUILD_ROOT/usr/bin/genesis-bootloader
 
 %post
 cat /root/.bash_profile.genesis_scripts >> /root/.bash_profile
-# TODO undo this hack
-cp  /etc/init/tty.conf.override /etc/init/tty.conf
-/usr/bin/patch /etc/sysconfig/init < /etc/sysconfig/init.diff
+
+# enable autologin for regular tty devices
+sed -e 's|^exec /sbin/mingetty|exec /sbin/mingetty --autologin root|' -i /etc/init/tty.conf
+# enable autologin for serial tty devices
+sed -e 's|^exec /sbin/agetty|exec /sbin/agetty -8 -n -l /root/login-shell|' -i /etc/init/serial.conf
+
 chkconfig --add network-prep
 chkconfig --add genesis
 
