@@ -5,7 +5,7 @@
 #
 
 ### BEGIN INIT INFO
-# X-Start-After:    $network
+# Required-Start:    $local_fs $network $syslog
 # Default-Start:     2 3 4 5
 # Description:       run genesis bootloader
 ### END INIT INFO
