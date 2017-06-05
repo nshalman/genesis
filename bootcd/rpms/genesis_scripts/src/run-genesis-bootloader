@@ -1,6 +1,9 @@
 #!/bin/bash
 
 source /etc/sysconfig/genesis
+# If the config file is broken, use sane defaults
+GENESIS_PIDFILE=${GENESIS_PIDFILE:-/var/run/genesis.pid}
+GENESIS_LOGFILE=${GENESIS_LOGFILE:-/var/log/genesis-bootloader.log}
 
 # send stdout and stderr to the log file
 exec &>${GENESIS_LOGFILE}
