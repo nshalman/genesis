@@ -8,7 +8,7 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root
 Source0:        src/root-bash_profile
 Source1:        src/network-prep.init
 Source4:        src/genesis-bootloader
-Source5:        src/login-shell
+Source5:        src/autologin
 Source6:        src/genesis.init
 Source7:        src/run-genesis-bootloader
 Source8:        src/genesis.sysconfig
@@ -39,7 +39,7 @@ install -m 755 -T %{SOURCE6}   $RPM_BUILD_ROOT/etc/init.d/genesis
 install -m 644 -T %{SOURCE8}   $RPM_BUILD_ROOT/etc/sysconfig/genesis
 
 # add helper for agetty
-install -m 555 -T %{SOURCE5}   $RPM_BUILD_ROOT/root/login-shell
+install -m 555 -T %{SOURCE5}   $RPM_BUILD_ROOT/usr/bin/autologin
 
 # add the bootloader and its wrapper
 mkdir -p $RPM_BUILD_ROOT/usr/bin/
@@ -57,7 +57,7 @@ install -m 755 -T %{SOURCE7}   $RPM_BUILD_ROOT/usr/bin/run-genesis-bootloader
 %config /root/.bash_profile.genesis_scripts
 /usr/bin/genesis-bootloader
 /usr/bin/run-genesis-bootloader
-/root/login-shell
+/usr/bin/autologin
 
 %post
 cat /root/.bash_profile.genesis_scripts >> /root/.bash_profile
@@ -65,7 +65,7 @@ cat /root/.bash_profile.genesis_scripts >> /root/.bash_profile
 # enable autologin for regular tty devices
 sed -e 's|^exec /sbin/mingetty|exec /sbin/mingetty --autologin root|' -i /etc/init/tty.conf
 # enable autologin for serial tty devices
-sed -e 's|^exec /sbin/agetty|exec /sbin/agetty -8 -n -l /root/login-shell|' -i /etc/init/serial.conf
+sed -e 's|^exec /sbin/agetty|exec /sbin/agetty -8 -n -l /usr/bin/autologin|' -i /etc/init/serial.conf
 
 chkconfig --add network-prep
 chkconfig --add genesis
