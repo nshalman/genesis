@@ -17,6 +17,7 @@ case "$1" in
 	echo -n $"Starting genesis bootloader:  "
 	/usr/bin/run-genesis-bootloader &>/dev/null &
 	success
+	echo
 	;;
     *)  ;;
 esac
