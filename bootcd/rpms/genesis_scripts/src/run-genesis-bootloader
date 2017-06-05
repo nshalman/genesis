@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 source /etc/sysconfig/genesis
 # If the config file is broken, use sane defaults
 GENESIS_PIDFILE=${GENESIS_PIDFILE:-/var/run/genesis.pid}
@@ -20,5 +22,5 @@ ruby --version
 if [[ ! -z $GENESIS_MODE ]]
 then
     # disable task execution prompting when doing initial target run
-    GENESIS_PROMPT_TIMEOUT=0 /usr/bin/genesis-bootloader
+    GENESIS_PROMPT_TIMEOUT=0 genesis-bootloader
 fi
