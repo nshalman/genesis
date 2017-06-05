@@ -26,8 +26,8 @@ if [[ ! -z "${GENESIS_PID}" ]] && [[ -f "${GENESIS_LOGFILE}" ]]
 then
 	tail -n 10000 -f --pid="${GENESIS_PID}" "${GENESIS_LOGFILE}"
 else
-	echo "Something went wrong trying to tail the Genesis logfile:"
-	echo "GENESIS_PIDFILE=${GENESIS_PIDFILE}"
-	echo "GENESIS_PID=${GENESIS_PID}"
-	echo "GENESIS_LOGFILE=${GENESIS_LOGFILE}"
+	>&2 echo "Something went wrong trying to tail the Genesis logfile:"
+	>&2 echo "GENESIS_PIDFILE=${GENESIS_PIDFILE}"
+	>&2 echo "GENESIS_PID=${GENESIS_PID}"
+	>&2 echo "GENESIS_LOGFILE=${GENESIS_LOGFILE}"
 fi
