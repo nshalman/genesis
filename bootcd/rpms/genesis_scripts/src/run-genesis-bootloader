@@ -6,9 +6,9 @@ GENESIS_PIDFILE=${GENESIS_PIDFILE:-/var/run/genesis.pid}
 GENESIS_LOGFILE=${GENESIS_LOGFILE:-/var/log/genesis-bootloader.log}
 
 # send stdout and stderr to the log file
-exec &>${GENESIS_LOGFILE}
+exec &>"${GENESIS_LOGFILE}"
 
-echo $$>${GENESIS_PIDFILE}
+echo $$>"${GENESIS_PIDFILE}"
 
 GENESIS_MODE="$(grep -o -e 'GENESIS_MODE=[^ ]*' /proc/cmdline | cut -c14-)"
 
