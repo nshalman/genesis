@@ -31,3 +31,6 @@ else
 	>&2 echo "GENESIS_PID=${GENESIS_PID}"
 	>&2 echo "GENESIS_LOGFILE=${GENESIS_LOGFILE}"
 fi
+
+# for some reason we find ourselves in /dev
+cd $HOME

@@ -51,20 +51,23 @@ install -m 755 -T %{SOURCE7}   $RPM_BUILD_ROOT/usr/bin/run-genesis-bootloader
 
 %files
 %defattr(-, root, root)
-%config /etc/init.d/genesis
-%config /etc/init.d/network-prep
+/etc/init.d/genesis
+/etc/init.d/network-prep
 %config /etc/sysconfig/genesis
-%config /root/.bash_profile.genesis_scripts
+/root/.bash_profile.genesis_scripts
 /usr/bin/genesis-bootloader
 /usr/bin/run-genesis-bootloader
 /usr/bin/autologin
 
 %post
-cat /root/.bash_profile.genesis_scripts >> /root/.bash_profile
+sed '/.bash_profile.genesis_scripts/d' -i /root/.bash_profile
+echo '. /root/.bash_profile.genesis_scripts' >> /root/.bash_profile
 
 # enable autologin for regular tty devices
+sed -e '/ --autologin root/d' -i /etc/init/tty.conf
 sed -e 's|^exec /sbin/mingetty|exec /sbin/mingetty --autologin root|' -i /etc/init/tty.conf
 # enable autologin for serial tty devices
+sed -e '/ -8 -n -l .*autologin/d' -i /etc/init/serial.conf
 sed -e 's|^exec /sbin/agetty|exec /sbin/agetty -8 -n -l /usr/bin/autologin|' -i /etc/init/serial.conf
 
 chkconfig --add network-prep
