@@ -39,10 +39,10 @@ install -m 755 -T %{SOURCE6}   $RPM_BUILD_ROOT/etc/init.d/genesis
 install -m 644 -T %{SOURCE8}   $RPM_BUILD_ROOT/etc/sysconfig/genesis
 
 # add helper for agetty
+mkdir -p $RPM_BUILD_ROOT/usr/bin/
 install -m 555 -T %{SOURCE5}   $RPM_BUILD_ROOT/usr/bin/autologin
 
 # add the bootloader and its wrapper
-mkdir -p $RPM_BUILD_ROOT/usr/bin/
 install -m 555 -T %{SOURCE4}   $RPM_BUILD_ROOT/usr/bin/genesis-bootloader
 install -m 755 -T %{SOURCE7}   $RPM_BUILD_ROOT/usr/bin/run-genesis-bootloader
 
