@@ -6,7 +6,7 @@ URL:            http://tumblr.github.io/genesis
 BuildArch:      noarch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root
 Source0:        src/root-bash_profile
-Source1:        src/init.d-network-prep
+Source1:        src/network-prep.init
 Source4:        src/genesis-bootloader
 Source5:        src/login-shell
 Source6:        src/genesis.init
