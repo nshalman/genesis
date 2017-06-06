@@ -10,6 +10,9 @@ GENESIS_LOGFILE=${GENESIS_LOGFILE:-/var/log/genesis-bootloader.log}
 # Try for two seconds to find a pidfile
 for i in {1..20}
 do
+	# If we came in by SSH, don't tail the log file...
+	if [[ ! -z "${SSH_CLIENT}" ]]; then break; fi
+
 	if [[ -f "${GENESIS_PIDFILE}" ]]
 	then
 		# get the pid and break out of the for loop
@@ -22,7 +25,11 @@ done
 
 # If we found a pid and a log file, tail the log until the
 # process exits
-if [[ ! -z "${GENESIS_PID}" ]] && [[ -f "${GENESIS_LOGFILE}" ]]
+if [[ ! -z "${SSH_CLIENT}" ]]
+then
+	# we came in via SSH... Don't tail the log file.
+	true
+elif [[ ! -z "${GENESIS_PID}" ]] && [[ -f "${GENESIS_LOGFILE}" ]]
 then
 	tail -n 10000 -f --pid="${GENESIS_PID}" "${GENESIS_LOGFILE}"
 else
