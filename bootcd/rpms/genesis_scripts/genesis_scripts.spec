@@ -61,23 +61,25 @@ install -m 755 -T %{SOURCE7}   $RPM_BUILD_ROOT/usr/bin/run-genesis-bootloader
 /usr/bin/autologin
 
 %post
-sed '/.bash_profile.genesis_scripts/d' -i /root/.bash_profile
-echo '. /root/.bash_profile.genesis_scripts' >> /root/.bash_profile
+# root should attempt to tail the genesis log file when logged in
+grep -q genesis_scripts /root/.bash_profile || \
+  echo '. /root/.bash_profile.genesis_scripts' >> /root/.bash_profile
 
 # enable autologin for regular tty devices
-sed -e '/ --autologin root/d' -i /etc/init/tty.conf
-sed -e 's|^exec /sbin/mingetty|exec /sbin/mingetty --autologin root|' -i /etc/init/tty.conf
+grep -q autologin /etc/init/tty.conf || \
+  sed -e 's|^exec /sbin/mingetty|exec /sbin/mingetty --autologin root|' -i /etc/init/tty.conf
 # enable autologin for serial tty devices
-sed -e '/ -8 -n -l .*autologin/d' -i /etc/init/serial.conf
-sed -e 's|^exec /sbin/agetty|exec /sbin/agetty -8 -n -l /usr/bin/autologin|' -i /etc/init/serial.conf
+grep -q autologin /etc/init/serial.conf || \
+  sed -e 's|^exec /sbin/agetty|exec /sbin/agetty -8 -n -l /usr/bin/autologin|' -i /etc/init/serial.conf
 
 chkconfig --add network-prep
 chkconfig --add genesis
 
 %changelog
-* Thu May 25 2017 Nahum Shalman <nshalman@uber.com> 0.10
+* Tue Jun 06 2017 Nahum Shalman <nshalman@uber.com> 0.10
 - use an init script to launch genesis bootloader
 - all ttys log in and tail the log file until done
+- enable serial console to do autologin too
 
 * Fri Jan 09 2015 Roy Marantz <marantz@tumblr.com> 0.5-1
 - redo networking setup
