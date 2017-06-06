@@ -40,4 +40,4 @@ else
 fi
 
 # for some reason we find ourselves in /dev
-cd $HOME
+cd "${HOME}"
