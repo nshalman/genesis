@@ -14,21 +14,21 @@ four different variations on kernel command line arguments to verify behavior.
 
 Those variations are (excerpted here from the [Makefile](Makefile)):
 ```make
-run-serial: output
+test-serial: output
 	# Note: ttyS1 must come last for the serial port to get agetty on it.
 	@echo This test should result in automatic tailing of log on both tty1 and ttyS1
 	$(QEMU) -append "$(BASE_ARGS) console=ttyS1 GENESIS_AUTOTAIL"
 
-run-serial-notail: output
+test-serial-notail: output
 	# Note: ttyS1 must come last for the serial port to get agetty on it.
 	@echo This test should result in login prompts on both tty1 and ttyS1
 	$(QEMU) -append "$(BASE_ARGS) console=ttyS1"
 
-run-tty1: output
+test-tty1: output
 	@echo This test should result in automatic tailing of log on tty1 only
 	$(QEMU) -append "$(BASE_ARGS) GENESIS_AUTOTAIL"
 
-run-tty1-notail: output
+test-tty1-notail: output
 	@echo This test should result in login prompt on tty1 only
 	$(QEMU) -append "$(BASE_ARGS)"
 ```
