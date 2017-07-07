@@ -1,29 +1,42 @@
-# Check if Docker needs sudo
-ifeq ($(shell docker ps 2>/dev/null; echo $$?),1)
-SUDO=sudo
-endif
-
-# Fingerprint OS
-OS=$(shell uname -s)
-
 BUILDER=genesis-builder
 CONTAINER=genesis
 UPSTREAM=tumblr/genesis-builder
 
+
+# Fingerprint OS
+OS=$(shell uname -s)
+
+ifeq ($(OS),Darwin)
+# Mac should never need sudo
+SUDO=
+else ifeq ($(OS),Linux)
+# Check if Docker needs sudo
+ifeq ($(shell docker info 2>/dev/null; echo $$?),1)
+SUDO=sudo
+endif
+else
+# Unsupported OS
+SUDO=false
+endif
+
 .PHONY: help warning clean cleanup all-targets
 
 help: warning
+	@echo
 	@echo "try 'make output' to build everything from scratch"
 	@echo "or 'make output-upstream' to use the $(UPSTREAM) Docker image"
+	@echo
 
 warning:
 ifeq ($(SUDO),sudo)
-	@echo 'WARNING: docker appears to need sudo'
+	@echo 'WARNING: docker appears to need sudo...'
 	@echo
-	@sleep 1
-else
-	@true
+else ifeq ($(SUDO),false)
+	@echo 'ERROR: $(OS) is unsupported'
+	@false
 endif
+	@echo 'Testing Docker:'
+	$(SUDO) docker info >/dev/null
 
 .docker-image: warning
 	$(SUDO) docker build -t $(BUILDER) .
