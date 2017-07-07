@@ -51,6 +51,7 @@ output: warning .docker-image
 output-upstream: warning
 	mkdir $@
 	$(SUDO) docker rm $(CONTAINER) || true
+	$(SUDO) docker pull $(UPSTREAM)
 	$(SUDO) docker run --rm --name $(CONTAINER) --privileged=true -v $(PWD)/$@:/output $(UPSTREAM)
 	$(SUDO) chown -R $(USER) $@
 
