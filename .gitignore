@@ -16,8 +16,9 @@ Gemfile.lock
 **/genesis_scripts-*.noarch.rpm
 **/genesis_scripts-*.src.rpm
 
-# stamp file used by Make
+# stamp files used by Make
 .docker-image
+.test-docker
 
 # output directories
 output

@@ -2,7 +2,6 @@ BUILDER=genesis-builder
 CONTAINER=genesis
 UPSTREAM=tumblr/genesis-builder
 
-
 # Fingerprint OS
 OS=$(shell uname -s)
 
@@ -19,15 +18,15 @@ else
 SUDO=false
 endif
 
-.PHONY: help warning clean cleanup all-targets
+.PHONY: help clean cleanup all-targets
 
-help: warning
+help: .test-docker
 	@echo
 	@echo "try 'make output' to build everything from scratch"
 	@echo "or 'make output-upstream' to use the $(UPSTREAM) Docker image"
 	@echo
 
-warning:
+.test-docker:
 ifeq ($(SUDO),sudo)
 	@echo 'WARNING: docker appears to need sudo...'
 	@echo
@@ -37,28 +36,29 @@ else ifeq ($(SUDO),false)
 endif
 	@echo 'Testing Docker:'
 	$(SUDO) docker info >/dev/null
+	touch $@
 
-.docker-image: warning
+.docker-image: .test-docker
 	$(SUDO) docker build -t $(BUILDER) .
 	touch .docker-image
 
-output: warning .docker-image
+output: .docker-image
 	mkdir $@
 	$(SUDO) docker rm $(CONTAINER) || true
 	$(SUDO) docker run --rm --name $(CONTAINER) --privileged=true -v $(PWD)/$@:/output $(BUILDER)
 	$(SUDO) chown -R $(USER) $@
 
-output-upstream: warning
+output-upstream: .test-docker
 	mkdir $@
 	$(SUDO) docker rm $(CONTAINER) || true
 	$(SUDO) docker pull $(UPSTREAM)
 	$(SUDO) docker run --rm --name $(CONTAINER) --privileged=true -v $(PWD)/$@:/output $(UPSTREAM)
 	$(SUDO) chown -R $(USER) $@
 
-clean: warning
+clean:
 	$(SUDO) docker rm $(CONTAINER) || true
 	$(SUDO) docker rmi $(BUILDER) || true
-	rm -rf output output-upstream .docker-image
+	rm -rf output output-upstream .docker-image .test-docker
 
 cleanup:
 ifeq ($(OS),Linux)
