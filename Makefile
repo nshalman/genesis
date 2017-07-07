@@ -71,7 +71,7 @@ all-targets: clean output-upstream output cleanup
 
 # The remaining targets are Linux specific
 ifeq ($(OS),Linux)
-.PHONY: test-serial-notail test-tty1 test-tty1-notail
+.PHONY: test-serial test-serial-notail test-tty1 test-tty1-notail
 
 # Run QEMU connecting VM ttyS1 to stdio
 # ctrl-C will kill the VM
