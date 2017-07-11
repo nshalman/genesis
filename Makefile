@@ -10,7 +10,7 @@ ifeq ($(OS),Darwin)
 SUDO=
 else ifeq ($(OS),Linux)
 # Check if Docker needs sudo
-ifeq ($(shell docker info 2>/dev/null; echo $$?),1)
+ifeq ($(shell docker info >/dev/null 2>/dev/null; echo $$?),1)
 SUDO=sudo
 endif
 else
@@ -28,6 +28,7 @@ help: .test-docker
 
 .test-docker:
 ifeq ($(SUDO),sudo)
+	@echo
 	@echo 'WARNING: docker appears to need sudo...'
 	@echo
 else ifeq ($(SUDO),false)
@@ -35,7 +36,7 @@ else ifeq ($(SUDO),false)
 	@false
 endif
 	@echo 'Testing Docker:'
-	$(SUDO) docker info >/dev/null
+	$(SUDO) docker info >/dev/null 2>/dev/null
 	touch $@
 
 .docker-image: .test-docker
