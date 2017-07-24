@@ -77,6 +77,9 @@ rm -rf base epel local tftpboot updates fastbugs security
 echo '### create genesis.iso'
 livecd-iso-to-pxeboot genesis.iso
 
+# cleanup dangling loop device(s)
+losetup -a | awk -F: '/genesis.bootcd.genesis.iso/{system("losetup -d "$1)}'
+
 mv tftpboot/initrd0.img $OUTPUT_DIR/genesis-initrd.img
 mv tftpboot/vmlinuz0 $OUTPUT_DIR/genesis-vmlinuz
 chmod 644 $OUTPUT_DIR/genesis-vmlinuz

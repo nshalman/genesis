@@ -18,7 +18,7 @@ else
 SUDO=false
 endif
 
-.PHONY: help clean cleanup all-targets
+.PHONY: help clean all-targets
 
 help: .test-docker
 	@echo
@@ -61,15 +61,7 @@ clean:
 	$(SUDO) docker rmi $(BUILDER) || true
 	rm -rf output output-upstream .docker-image .test-docker
 
-cleanup:
-ifeq ($(OS),Linux)
-	sudo losetup -a | grep /genesis/bootcd/genesis.iso | cut -d: -f1 | xargs -t -r -n 1 sudo losetup -d
-else
-	@echo WARNING: If you see this, your Linux VM might have a dangling loop device still configured
-	@sleep 1
-endif
-
-all-targets: clean output-upstream output cleanup
+all-targets: clean output-upstream output
 
 # The remaining targets are Linux specific
 ifeq ($(OS),Linux)
