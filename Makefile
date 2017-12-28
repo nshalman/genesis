@@ -69,7 +69,7 @@ ifeq ($(OS),Linux)
 
 # Run QEMU connecting VM ttyS1 to stdio
 # ctrl-C will kill the VM
-QEMU=qemu-system-x86_64 --enable-kvm -smp 2 -m 2048 -kernel output/genesis-vmlinuz -initrd output/genesis-initrd.img -serial null -serial stdio -monitor null
+QEMU=qemu-system-x86_64 --enable-kvm -smp 2 -m 2048 -kernel output/genesis-vmlinuz -initrd output/genesis-initrd.img -serial null -serial stdio -monitor null $(QEMU_EXTRA_ARGS)
 BASE_ARGS=rootflags=loop root=live:/genesis.iso rootfstype=auto ro vga=791 rd_NO_LUKS rd_NO_MD rd_NO_DM GENESIS_MODE=util console=tty1
 
 test-serial: output
